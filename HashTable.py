@@ -1,3 +1,4 @@
+
 class HashTable:
     def __init__(self, size=11):
         self.size = size
@@ -94,6 +95,9 @@ class HashTable:
 
 # Training and Prediction: Develop training and prediction algorithm as described in PA 4
 
+# Dictionary is implementation of ADT Map, 1-to-1 relationship between key and value
+# To look up a value, we'll use a hash table with parallel array to store value at the same slot location
+
 
 ht = HashTable()
 print(ht.put(61))
@@ -114,3 +118,22 @@ print(ht.put(90))
 print(ht.slots)
 print(ht.remove(55))
 print(ht.slots)
+
+
+# HASHING STRINGS DEMONSTRATION
+c = ord("c")
+a = ord("a")
+t = ord("t")
+print("f(\"cat\") = (%d + %d + %d) %% 11 = %d" % (c, a, t, (c + a + t) % 11))
+print("f(\"tac\") = (%d + %d + %d) %% 11 = %d" % (t, a, c, (t + a + c) % 11))
+
+# to address this issue we can instead call the special method __hash__():
+cat_hash = "cat".__hash__()
+tac_hash = "tac".__hash__()
+
+print("f(\"cat\") = \"cat\".__hash__() %% 11 = %d %% 11 = %d" %
+      (cat_hash, cat_hash % 11))
+print("f(\"tac\") = \"tac\".__hash__() %% 11 = %d %% 11 = %d" %
+      (tac_hash, tac_hash % 11))
+
+# NOTE: By default, the __hash__() values of str, bytes, and datetime objects are salted with an unpredicteable random value. Although they remain constant within an individual Python process, they are not predictable between repeated invocations of Python
