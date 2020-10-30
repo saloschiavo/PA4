@@ -10,11 +10,19 @@ class HashTable:
         '''
         # TODO: This is set up for linear probing, not chaining, we have to fix that so that it works with chaining
         # TODO: Add element. CHAINING: if LL doesn't exist, create one and add it. if LL exists, add to LL
+        # TODO: Instead of putting an ITEM in here, we really want to put a LINKEDLIST
         hashvalue = self.hashfunction(item)
         slot_placed = -1
         # empty slot or slot contains items already
         if self.slots[hashvalue] == None or self.slots[hashvalue] == item:
+            # TODO: Instead of creating an item here, we want to create a LL
+            # TODO: Technically you could also just use a normal List to do this but supposedly that's more difficult
             self.slots[hashvalue] = item
+            # TODO: Change this to append
+            # TODO: But we also have to check to see if item has already been placed in LL
+            # Traverse through LL and check if item exists
+            # If it does not exist, add to LL
+            # If it does exist, replace value and return how many iterations it took so we know which node the item exists in and return that
             slot_placed = hashvalue
         else:
             nextslot = self.rehash(hashvalue)
@@ -22,10 +30,12 @@ class HashTable:
                 nextslot = self.rehash(nextslot)
                 if nextslot == hashvalue:  # we have done a full circle through hash table
                     # no available slots
+                    # TODO: Return slot_placed AND position of the Node instead
                     return slot_placed
 
             self.slots[nextslot] = item
             slot_placed = nextslot
+        # TODO: Return slot_placed AND position of the Node instead
         return slot_placed
 
     def get(self, item):
@@ -96,7 +106,7 @@ class HashTable:
 
 # Dictionary is implementation of ADT Map, 1-to-1 relationship between key and value
 # To look up a value, we'll use a hash table with parallel array to store value at the same slot location
-
+#
 
 ht = HashTable()
 print(ht.put(61))
