@@ -1,3 +1,7 @@
+from HashTable import HashTable
+from Map import Map
+
+
 class WordPredictor():
 
     # He said that at some point we may have to do something similar to this:
@@ -9,29 +13,33 @@ class WordPredictor():
     # Doing it in the function is optional but it must have the capability
 
     def __init__(self):
-        # Members: Instance variables:
-        # * Map object: word_to_count -- this is a map used to store word in map. also stores total, a single variable. the total variable is separate so we can compute probability at any point
-        # int total
+        # Members / Instance variables:
+        # Map object: word_to_count -- this is a map used to store word in map. also stores total, a single variable. the total variable is separate so we can compute probability at any point
+        self.word_to_count = Map()
+        self.total = 0
+        self.prefix_to_entry = Map()
         # * prefix_to_entry -- another map with each prefix value mapping to dictionary entry object, has the most probable word & probability of word together
-        pass
 
     def train(self, training_file):
+        # the train method might have to use the train_word() method
         pass
 
     def train_word(self, word):
         # start training with this, call it multiple times to test
         # each time we call this,
         # add word to Map word_to_count
-        pass
+        self.word_to_count[word] = len(word)
 
     def get_training_count(self):
-        # returns total (instance variable)
-        pass
+        '''
+        This method returns the instance variable total
+        '''
+        return self.total
 
     def get_word_count(self, word):
         # returns count within word_to_count Map
-        # word_to_count['word'] should work if Map has been implemented
-        # or .get and use this as a key????
+        # return word_to_count['word'] should work if Map has been implemented properly
+        # alternatively, .get and use this as a key? idk what he meant by that
         pass
 
     def build(self):
@@ -43,15 +51,22 @@ class WordPredictor():
 
 class DictEntry:
     def __init__(self, word, prob):
+        self.word = word
+        self.prob = prob
+
+    def get_word(self):
+        return self.word
+
+    def get_prob(self):
+        return self.prob
+
+    def match_pattern(self, pattern):
+        # TODO: This function is OPTIONAL but we have to do it one way or another
         pass
-    # * get_word(self)
-    # * get_prob(self)
-    # * match_pattern(self, pattern) -- OPTIONAL
 
-    # TODO: Hash Table and Map
-    # Refer to class notes, textbooks, provided examples
-
-    # TODO: Client and test application with keyboard_test.py
+        # TODO: Hash Table and Map
+        # Refer to class notes, textbooks, provided examples
+        # TODO: Client and test application with keyboard_test.py
 
 
 def main():
