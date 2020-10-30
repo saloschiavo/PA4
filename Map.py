@@ -4,6 +4,8 @@
 # TODO: Represent word and unigram probability as DictEntry objects
 # TODO: Store word <-> word_count pairs using MAP
 # TODO: Store prefix <-> DictEntry pairs using Map
+# compare probability before doing update
+# prefix_to_entry['w'] = {'whale', 0.1}
 
 from HashTable import HashTable
 
@@ -12,8 +14,11 @@ class Map(HashTable):
     def __init__(self, size=11):
         '''
         Method description
+        NOTE: Each of these is a list, so the Map class includes 2 lists: one for keys, one for values
+        Inherits first list from HashTable class
+        Adds second list of its own as child class
         '''
-        super().__init__(size)
+        super().__init__(size)  # holds keys
         self.values = [None] * self.size  # holds values
 
     def __str__(self):
@@ -59,8 +64,29 @@ class Map(HashTable):
         '''
         Add a new key-value pair to the map. If the key is already in the map, then replace the old value with the new value.
         '''
+        # Find which slot item belongs to in first keys list.
+        # If nothing, add linked list and add item
+        # If LL exists, traverse it to see if item already exists
+        # Either update item or append item to LL -- this functionality exists in parent class. We use key to call put() from HashTable to take care of adding to first list. Then we take the value and add it to the second list
+        list_name = []
+        # TODO: With chaining, we need slot and node location information
         slot = super().put(key)
         if slot != -1:
+            # TODO: PROBABLY handle this with LL instead of Python list
+            # TODO: check if list is empty, if empty, create LL and add the value in LL
+            # TODO: If not empty, check the Node location and traverse through LL for Node location & add value to LL head Node. We don't need to check if it's unique because it's okay if its not
+            if len(list_name) == 0:
+                newList = []
+                newList.append(key)
+            else:
+                # traverse list for Node location and add value to head
+                for i in list_name:
+                    if key == i:
+                        # increase frequency?
+                        # I know this isn't right but this is the gist of it??
+                        found = True
+                    if found == False:
+                        list.append(key)
             self.values[slot] = value
         return -1
 
@@ -92,6 +118,7 @@ class Map(HashTable):
         return key % self.size
 
 
+# Implementation example
 m = Map()
 m["cat"] = len("cat")
 m["dog"] = len("dog")
