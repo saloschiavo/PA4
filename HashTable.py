@@ -88,7 +88,12 @@ class HashTable:
         '''
         Remainder method
         '''
-        return item % self.size
+        if type(item) is int:
+            return item % self.size
+        key = 0
+        for x in item:
+            key += ord(x)
+        return key % self.size
 
     def rehash(self, oldhash):
         '''
@@ -96,6 +101,12 @@ class HashTable:
         '''
         # TODO: Change method definition for Chaining with a LL
         return (oldhash + 1) % self.size
+
+    def print(self):
+        '''
+        Method to print
+        '''
+        print(self.slots)
 
 
 # This contains list to store keys, Map contains list with values
