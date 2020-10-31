@@ -2,23 +2,28 @@ class HashTable:
     def __init__(self, size=11):
         self.size = size
         self.slots = [None] * self.size
+        # TODO: use for loop to add Lists to each slot?
 
     def put(self, item):
         '''
         Place an item in the hash table.
         Return slot number if successful, -1 otherwise (no available slots, table is full)
         '''
-        # TODO: This is set up for linear probing, not chaining, we have to fix that so that it works with chaining
+
+        # initialize list to
+        myList = []
+
+        # TODO: Don't have your slots in the HashTable be None or a single value or a list. Have them be None or a List or even just maybe a List which you already said, but i wanted to reinforce
+
         # TODO: Add element. CHAINING: if LL doesn't exist, create one and add it. if LL exists, add to LL
-        # TODO: Instead of putting an ITEM in here, we really want to put a LINKEDLIST
+        # TODO: Instead of putting an ITEM in here, we really want to put a LIST
         hashvalue = self.hashfunction(item)
         slot_placed = -1
         # empty slot or slot contains items already
         if self.slots[hashvalue] == None or self.slots[hashvalue] == item:
-            # TODO: Instead of creating an item here, we want to create a LL
-            # TODO: Technically you could also just use a normal List to do this but supposedly that's more difficult
-            self.slots[hashvalue] = item
-            # TODO: Change this to append
+            # TODO: Instead of creating an item here, we want to create a List
+            self.slots[hashvalue].append(item)
+
             # TODO: But we also have to check to see if item has already been placed in LL
             # Traverse through LL and check if item exists
             # If it does not exist, add to LL
@@ -45,8 +50,11 @@ class HashTable:
         It does not modify the hash table, it just goes to see is the item there?
         Sort of like a search
         '''
-        # TODO: This should use a linked list to get to element
+        # TODO: This should use a list to get to element
         startslot = self.hashfunction(item)
+
+        # TODO: Your get will wind up looking something like
+        # item in self.slots[self.hashfunction(item)]
 
         stop = False
         found = False
@@ -99,7 +107,7 @@ class HashTable:
         '''
         Plus 1 rehash for linear probing, rehash with remainder method to spread out values
         '''
-        # TODO: Change method definition for Chaining with a LL
+        # TODO: Change method definition for Chaining with a List
         return (oldhash + 1) % self.size
 
     def print(self):
