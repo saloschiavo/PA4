@@ -30,6 +30,10 @@ class DictEntry:
             return False
         return self.word == pattern.word
 
+    def __str__(self):
+        # TODO: Make this return the word? No clue if this works
+        return self.word
+
         # TODO: Hash Table and Map
         # Refer to class notes, textbooks, provided examples
         # TODO: Client and test application with keyboard_test.py
@@ -98,7 +102,7 @@ class WordPredictor():
 
     def build(self):
         '''
-        This method iterates through all words, building the predictions and prefixes storing in the prefix Map. It stores potential prefixes in descending order.
+        This method iterates through all words in word_to_count dictionary, building the predictions and prefixes storing in the prefix Map. It stores potential prefixes in descending order in the prefix_to_entry dictEntry. We do this multiple times for a single word.
         '''
         for t in (self.word_to_count.slots):
             if t is None:
