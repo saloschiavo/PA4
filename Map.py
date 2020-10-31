@@ -63,23 +63,43 @@ class Map(HashTable):
     def put(self, key, value):
         '''
         Add a new key-value pair to the map. If the key is already in the map, then replace the old value with the new value.
+        Returns the item if it is stored, or returns -1 if the item is not in the list.
         '''
-        # Find which slot item belongs to in first keys list.
+
+        # Find which slot the item belongs to in first keys list.
         # If nothing, add linked list and add item
         # If LL exists, traverse it to see if item already exists
         # Either update item or append item to LL -- this functionality exists in parent class. We use key to call put() from HashTable to take care of adding to first list. Then we take the value and add it to the second list
+
+        # But with python lists you can just do
+        # [1,2,3].index(2) # => 1
+        # [1,2,3].index(4) # => ValueError
+        # or like 3 in [1, 2, 3] # => True
         list_name = []
-        # TODO: With chaining, we need slot and node location information
+        newList = []
+
+        # TODO: Stop being confused about this and figure it out
+        hashvalue = self.hashfunction(key)
+        # Tuple stores key and value
+        myTuple = (key, value)
+        if self.slots[hashvalue] is None:
+            self.slots[hashvalue] = [myTuple]
+        elif self.slots[hashvalue].count(myTuple) == 0:
+            self.slots[hashvalue].append(myTuple)
+        else:
+            index = self.slots[hashvalue].index(myTuple)
+            self.slots[hashvalue][index] = myTuple
+
         slot = super().put(key)
         if slot != -1:
-            # TODO: PROBABLY handle this with LL instead of Python list
-            # TODO: check if list is empty, if empty, create LL and add the value in LL
-            # TODO: If not empty, check the Node location and traverse through LL for Node location & add value to LL head Node. We don't need to check if it's unique because it's okay if its not
+            # Check if list is empty, if empty, create LL and add the value in LL
             if len(list_name) == 0:
-                newList = []
                 newList.append(key)
+            elif list_name.count(myTuple) == 0:
+                newList.append(key)
+                # TODO: If not empty, check the index location and traverse through list for index location & add value to list. We don't need to check if it's unique because it's okay if its not
             else:
-                # traverse list for Node location and add value to head
+                # traverse list for index location and add value to head
                 for i in list_name:
                     if key == i:
                         # increase frequency?
