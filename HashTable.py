@@ -1,47 +1,20 @@
 class HashTable:
     def __init__(self, size=11):
         self.size = size
-        self.slots = [None] * self.size
-        # TODO: use for loop to add Lists to each slot?
+        self.slots = []
+        for i in range(0, size):
+            self.slots.append([])
 
     def put(self, item):
         '''
         Place an item in the hash table.
         Return slot number if successful, -1 otherwise (no available slots, table is full)
         '''
-
-        # initialize list to
-        myList = []
-
-        # TODO: Don't have your slots in the HashTable be None or a single value or a list. Have them be None or a List or even just maybe a List which you already said, but i wanted to reinforce
-
-        # TODO: Add element. CHAINING: if LL doesn't exist, create one and add it. if LL exists, add to LL
-        # TODO: Instead of putting an ITEM in here, we really want to put a LIST
-        hashvalue = self.hashfunction(item)
-        slot_placed = -1
-        # empty slot or slot contains items already
-        if self.slots[hashvalue] == None or self.slots[hashvalue] == item:
-            # TODO: Instead of creating an item here, we want to create a List
-            self.slots[hashvalue].append(item)
-
-            # TODO: But we also have to check to see if item has already been placed in LL
-            # Traverse through LL and check if item exists
-            # If it does not exist, add to LL
-            # If it does exist, replace value and return how many iterations it took so we know which node the item exists in and return that
-            slot_placed = hashvalue
-        else:
-            nextslot = self.rehash(hashvalue)
-            while self.slots[nextslot] != None and self.slots[nextslot] != item:
-                nextslot = self.rehash(nextslot)
-                if nextslot == hashvalue:  # we have done a full circle through hash table
-                    # no available slots
-                    # TODO: Return slot_placed AND position of the Node instead
-                    return slot_placed
-
-            self.slots[nextslot] = item
-            slot_placed = nextslot
-        # TODO: Return slot_placed AND position of the Node instead
-        return slot_placed
+        startslot = self.hashfunction(item)
+        self.slots[startslot].append(item)
+        slot = self.slots[startslot]
+        indexInSlot = slot.index(item)
+        return [startslot, indexInSlot]
 
     def get(self, item):
         '''
@@ -50,25 +23,13 @@ class HashTable:
         It does not modify the hash table, it just goes to see is the item there?
         Sort of like a search
         '''
-        # TODO: This should use a list to get to element
         startslot = self.hashfunction(item)
-
-        # TODO: Your get will wind up looking something like
-        # item in self.slots[self.hashfunction(item)]
-
-        stop = False
-        found = False
-        position = startslot
-        while self.slots[position] != None and not found and not stop:
-            if self.slots[position] == item:
-                found = True
-            else:
-                position = self.rehash(position)
-                if position == startslot:
-                    stop = True
-        if found:
-            return position
-        return -1
+        if item in self.slots[startslot]:
+            slot = self.slots[startslot]
+            indexInSlot = slot.index(item)
+            return [startslot, indexInSlot]
+        else:
+            return -1
 
     def remove(self, item):
         '''
@@ -76,21 +37,16 @@ class HashTable:
         Returns slot position if item in hashtable, -1 otherwise
         '''
         startslot = self.hashfunction(item)
-
-        stop = False
-        found = False
-        position = startslot
-        while self.slots[position] != None and not found and not stop:
-            if self.slots[position] == item:
-                found = True
-                self.slots[position] = None
-            else:
-                position = self.rehash(position)
-                if position == startslot:
-                    stop = True
-        if found:
-            return position
-        return -1
+        if item in self.slots[startslot]:
+            # main slot
+            slot = self.slots[startslot]
+            # index in slot
+            indexInSlot = slot.index(item)
+            # This doesn't delete the item INDEX
+            del self.slots[startslot][indexInSlot]
+            return [startslot, indexInSlot]
+        else:
+            return -1
 
     def hashfunction(self, item):
         '''
@@ -103,18 +59,12 @@ class HashTable:
             key += ord(x)
         return key % self.size
 
-    def rehash(self, oldhash):
-        '''
-        Plus 1 rehash for linear probing, rehash with remainder method to spread out values
-        '''
-        # TODO: Change method definition for Chaining with a List
-        return (oldhash + 1) % self.size
-
-    def print(self):
+    def __str__(self):
         '''
         Method to print
         '''
-        print(self.slots)
+        # NOTE: KEEP THIS IN MIND, LEARN THIS
+        return(str(self.slots))
 
 
 # This contains list to store keys, Map contains list with values
@@ -127,41 +77,32 @@ class HashTable:
 # To look up a value, we'll use a hash table with parallel array to store value at the same slot location
 #
 
-ht = HashTable()
-print(ht.put(61))
-print(ht.put(7))
-print(ht.put(12))
-print(ht.put(44))
-print(ht.put(92))
-print(ht.put(55))
-print(ht.put(9))
-print(ht.put(4))
-print(ht.put(21))
-print(ht.slots)
-print(ht.put(23))
-print(ht.put(39))
-print(ht.slots)
+#ht = HashTable()
+# print(ht.put(61))
+# print(ht.put(12))
+# print(ht.put(44))
+# print(ht.put(92))
+# print(ht.put(55))
+# print(ht.put(9))
+# print(ht.put(4))
+# print(ht.put(21))
+# print(ht.slots)
+# print(ht.put(23))
+# print(ht.put(39))
+# print(ht.slots)
 # hash table is full, no room to put again
-print(ht.put(90))
-print(ht.slots)
-print(ht.remove(55))
-print(ht.slots)
+# print(ht.put(90))
+# print(ht.slots)
+# print(ht.remove(55))
+# print(ht.slots)
 
 
 # HASHING STRINGS DEMONSTRATION
-c = ord("c")
-a = ord("a")
-t = ord("t")
-print("f(\"cat\") = (%d + %d + %d) %% 11 = %d" % (c, a, t, (c + a + t) % 11))
-print("f(\"tac\") = (%d + %d + %d) %% 11 = %d" % (t, a, c, (t + a + c) % 11))
+#c = ord("c")
+#a = ord("a")
+#t = ord("t")
+#print("f(\"cat\") = (%d + %d + %d) %% 11 = %d" % (c, a, t, (c + a + t) % 11))
+#print("f(\"tac\") = (%d + %d + %d) %% 11 = %d" % (t, a, c, (t + a + c) % 11))
 
-# to address this issue we can instead call the special method __hash__():
-cat_hash = "cat".__hash__()
-tac_hash = "tac".__hash__()
-
-print("f(\"cat\") = \"cat\".__hash__() %% 11 = %d %% 11 = %d" %
-      (cat_hash, cat_hash % 11))
-print("f(\"tac\") = \"tac\".__hash__() %% 11 = %d %% 11 = %d" %
-      (tac_hash, tac_hash % 11))
 
 # NOTE: By default, the __hash__() values of str, bytes, and datetime objects are salted with an unpredicteable random value. Although they remain constant within an individual Python process, they are not predictable between repeated invocations of Python
