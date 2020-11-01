@@ -25,18 +25,14 @@ class DictEntry:
         return self.prob
 
     def match_pattern(self, pattern):
-        # TODO: Figure out if this works??
+        # TODO: Figure out if this works?? I think it should apply the pattern
         if type(pattern) is int:
             return False
         return self.word == pattern.word
 
     def __str__(self):
         # TODO: Make this return the word? No clue if this works
-        return self.word
-
-        # TODO: Hash Table and Map
-        # Refer to class notes, textbooks, provided examples
-        # TODO: Client and test application with keyboard_test.py
+        return str(self.word)
 
 
 class WordPredictor():
@@ -58,12 +54,13 @@ class WordPredictor():
         self.total = 0
         self.word_to_count = Map()
         self.prefix_to_entry = Map()
+        self.words = []
 
     def train(self, training_file):
         try:
             f = open(training_file, "r")
             # for line in
-            for line in training_file:
+            for line in f:
                 for word in line.split():
                     self.train_word(word)
             f.close()
@@ -74,15 +71,16 @@ class WordPredictor():
 
     def train_word(self, word):
         # utilize RegEx
+        # start training with this, call it multiple times to test
+        # each time we call this, add word to Map word_to_count
         newString = (re.sub(r'\W+', '', word)).lower()
         if self.word_to_count.get(newString) == -1:
+            self.words.append(newString)
             self.word_to_count.put(newString, 1)
         else:
             value = self.word_to_count.get(newString)
-            self.word_to_count.put(newString, value + 1)
-        # start training with this, call it multiple times to test
-        # each time we call this, add word to Map word_to_count
-        self.word_to_count[word] = len(word)
+            self.word_to_count.remove(newString)
+            self.word_to_count[newString] = value + 1
         self.total += 1
 
     def get_training_count(self):
@@ -102,29 +100,23 @@ class WordPredictor():
 
     def build(self):
         '''
-        This method iterates through all words in word_to_count dictionary, building the predictions and prefixes storing in the prefix Map. It stores potential prefixes in descending order in the prefix_to_entry dictEntry. We do this multiple times for a single word.
+        This method iterates through all words in word_to_count Map, building the predictions and prefixes storing in the prefix Map. It stores potential prefixes in descending order in the prefix_to_entry dictEntry. We do this multiple times for a single word.
         '''
-        for t in (self.word_to_count.slots):
-            if t is None:
-                continue
-            for key in t:
-                if key is None:
-                    continue
-                prefix = ""
-                dictE = DictEntry(key.key, key.value / self.total)
-                for c in key.key:
-                    prefix += c
-                    if self.prefix_to_entry.get(prefix) == -1:
-                        self.prefix_to_entry.put(prefix, [dictE])
-                    else:
-                        item = self.prefix_to_entry.get(prefix)
-                        if item[0].get_prob() < dictE.get_prob():
-                            item.insert(0, dictE)
-                        elif item.count(dictE) > 0 and item[item.index()].get_prob() < dictE.get_prob():
-                            item[item.index()] = dictE
-                        else:
-                            item.append(dictE)
-                        self.prefix_to_entry.put(prefix, item)
+        self.prefix_to_entry = Map()
+        for word in self.words:
+            count = self.word_to_count.get(word)
+            prefix = ""
+            for c in word:
+                prefix += c
+                if self.prefix_to_entry.get(prefix) == -1:
+                    dictE = DictEntry(word, (count/self.total))
+                    self.prefix_to_entry.put(prefix, dictE)
+                else:
+                    # if new prob is higher
+                    if (count/self.total) > self.prefix_to_entry.get(prefix).get_prob():
+                        dictE = DictEntry(word, (count/self.total))
+                        self.prefix_to_entry.remove(prefix)
+                        self.prefix_to_entry.put(prefix, dictE)
 
     def get_best(self, prefix):
         '''
@@ -133,8 +125,6 @@ class WordPredictor():
         '''
         if self.prefix_to_entry.get(prefix) == -1:
             return DictEntry("null", 0)
-            # if we're looking to get all best matches
-            # return [DictEntry("null", 0)]
         else:
             return self.prefix_to_entry.get(prefix)
 
@@ -150,8 +140,6 @@ class WordPredictor():
 
 
 def main():
-    print("Hello World.")
-
     test = WordPredictor()
     inp = input("Type mobydick.txt with .txt\n")
     print("Training on: {}".format(inp))
