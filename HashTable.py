@@ -67,42 +67,4 @@ class HashTable:
         return(str(self.slots))
 
 
-# This contains list to store keys, Map contains list with values
-# TODO: Keyboard word prediction: given a prefix, predict a word using unigram model
-# Example: 'ab' -> 'about', 0.001473 unigram probability
-
-# Training and Prediction: Develop training and prediction algorithm as described in PA 4
-
-# Dictionary is implementation of ADT Map, 1-to-1 relationship between key and value
-# To look up a value, we'll use a hash table with parallel array to store value at the same slot location
-#
-
-#ht = HashTable()
-# print(ht.put(61))
-# print(ht.put(12))
-# print(ht.put(44))
-# print(ht.put(92))
-# print(ht.put(55))
-# print(ht.put(9))
-# print(ht.put(4))
-# print(ht.put(21))
-# print(ht.slots)
-# print(ht.put(23))
-# print(ht.put(39))
-# print(ht.slots)
-# hash table is full, no room to put again
-# print(ht.put(90))
-# print(ht.slots)
-# print(ht.remove(55))
-# print(ht.slots)
-
-
-# HASHING STRINGS DEMONSTRATION
-#c = ord("c")
-#a = ord("a")
-#t = ord("t")
-#print("f(\"cat\") = (%d + %d + %d) %% 11 = %d" % (c, a, t, (c + a + t) % 11))
-#print("f(\"tac\") = (%d + %d + %d) %% 11 = %d" % (t, a, c, (t + a + c) % 11))
-
-
 # NOTE: By default, the __hash__() values of str, bytes, and datetime objects are salted with an unpredicteable random value. Although they remain constant within an individual Python process, they are not predictable between repeated invocations of Python
