@@ -25,25 +25,23 @@ class DictEntry:
         return self.prob
 
     def match_pattern(self, pattern):
-        # TODO: Figure out if this works?? I think it should apply the pattern
+        '''
+        This method matches the pattern of the words
+        Returns false if an integer is entered
+        Returns a boolean indicating if the words match
+        '''
         if type(pattern) is int:
             return False
         return self.word == pattern.word
 
     def __str__(self):
-        # TODO: Make this return the word? No clue if this works
+        '''
+        This method returns the word as a string
+        '''
         return str(self.word)
 
 
 class WordPredictor():
-    # He said that at some point we may have to do something similar to this:
-    # '[\w+]'[\w+]'
-    # read file, split all lines of file into individual words, lower case all words
-    # remove commas and ! and "" with regex library
-    # non-alphanumeric and non apostrophes are not removed
-    # re.package.whatever function, apply pattern in DictEntry or elsewhere
-    # Doing it in the function is optional but it must have the capability
-
     def __init__(self):
         '''
         This function initializes the WordPredictor() class.
@@ -57,22 +55,29 @@ class WordPredictor():
         self.words = []
 
     def train(self, training_file):
+        '''
+        This method accepts a training_file as input and parses all lines and words.
+        It prints an error if the file is not found.
+        '''
         try:
             f = open(training_file, "r")
-            # for line in
             for line in f:
                 for word in line.split():
                     self.train_word(word)
             f.close()
 
+        # returns error if file not found
         except FileNotFoundError:
             print("Could not open training file: {}".format(training_file))
             return
 
     def train_word(self, word):
+        '''
+        The train_word method utilizes a regular expression to manipulate words,
+        ensuring that they are all lowercase to match, and appending them to a
+        newString. Values are updated accordingly.
+        '''
         # utilize RegEx
-        # start training with this, call it multiple times to test
-        # each time we call this, add word to Map word_to_count
         newString = (re.sub(r'\W+', '', word)).lower()
         if self.word_to_count.get(newString) == -1:
             self.words.append(newString)
@@ -90,9 +95,10 @@ class WordPredictor():
         return self.total
 
     def get_word_count(self, word):
-        # returns count within word_to_count Map
-        # return word_to_count['word'] should work if Map has been implemented properly
-        # alternatively, .get and use this as a key? idk what he meant by that
+        '''
+        This method returns the count within the word_to_count Map.
+        It returns 0 if the word is not found, and otherwise returns the word count.
+        '''
         if self.word_to_count.get(word) == -1:
             return 0
         else:
@@ -112,7 +118,7 @@ class WordPredictor():
                     dictE = DictEntry(word, (count/self.total))
                     self.prefix_to_entry.put(prefix, dictE)
                 else:
-                    # if new prob is higher
+                    # if new probability is higher:
                     if (count/self.total) > self.prefix_to_entry.get(prefix).get_prob():
                         dictE = DictEntry(word, (count/self.total))
                         self.prefix_to_entry.remove(prefix)
@@ -121,7 +127,7 @@ class WordPredictor():
     def get_best(self, prefix):
         '''
         This method gets the best match for a given prefix,
-        and returns the word as a string.
+        and returns the word.
         '''
         if self.prefix_to_entry.get(prefix) == -1:
             return DictEntry("null", 0)
@@ -130,36 +136,9 @@ class WordPredictor():
 
     def get_best_n(self, prefix):
         '''
-        More advanced predictive keyboard that shows top N possible completions for current word. Letters should be labeled with numbers 0 up to N-1??
+        More advanced predictive keyboard that shows top N possible completions for current word.
         '''
-        # TODO: Bonus function?? Not sure if this works
         if self.prefix_to_entry.get(prefix) == -1:
             return [DictEntry("null", 0)]
         else:
             return self.prefix_to_entry.get(prefix)
-
-
-def main():
-    test = WordPredictor()
-    inp = input("Type mobydick.txt with .txt\n")
-    print("Training on: {}".format(inp))
-    test.train(inp)
-    print("Total words: {}".format(test.get_training_count()))
-    test.build()
-    inp = ""
-    print("Please type in prefix to get best match or type \"exit\" to exit program")
-    while inp != "exit":
-        inp = input("Prefix: ")
-        if inp == "exit":
-            break
-        print("Best matches are: ")
-        index = 0
-        for t in test.get_best(inp.lower()):
-            print("{}: {}\n".format(index + 1, t.get_word()))
-            index += 1
-            if index == int(sys.argv[1]):
-                break
-
-
-if __name__ == "__main__":
-    main()
