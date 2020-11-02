@@ -1,22 +1,11 @@
-# inherits/extends HashTable so it has all of the same methods as HashTable
-# add additional list to store values
-
-# TODO: Represent word and unigram probability as DictEntry objects
-# TODO: Store word <-> word_count pairs using MAP
-# TODO: Store prefix <-> DictEntry pairs using MAP
-# compare probability before doing update
-# prefix_to_entry['w'] = {'whale', 0.1}
-
 from HashTable import HashTable
 
 
 class Map(HashTable):
     def __init__(self, size=11):
         '''
-        Method description
-        NOTE: Each of these is a list, so the Map class includes 2 lists: one for keys, one for values
-        Inherits first list from HashTable class
-        Adds second list of its own as child class
+        The map inherits its first list from HashTable class, and adds 
+        second list of its own as child class
         '''
         super().__init__(size)  # holds keys
         # holds values
@@ -26,6 +15,7 @@ class Map(HashTable):
 
     def __str__(self):
         '''
+        This method allows us to construct a string from a Map.
         '''
         s = ""
         for slot, keys in enumerate(self.slots):
@@ -46,34 +36,39 @@ class Map(HashTable):
 
     def __getitem__(self, key):
         '''
+        This method gets the key.
         '''
         return self.get(key)
 
     def __setitem__(self, key, data):
         '''
+        This method sets the key and data.
         '''
         self.put(key, data)
 
     def __delitem__(self, key):
         '''
+        This method deletes a key.
         '''
         self.remove(key)
 
     def __contains__(self, key):
         '''
+        This method checks to see if a key is available.
         '''
         return self.get(key) != -1
 
     def put(self, key, value):
         '''
-        Add a new key-value pair to the map. If the key is already in the map, then replace the old value with the new value.
-        Returns the item if it is stored, or returns -1 if the item is not in the list.
+        Add a new key-value pair to the map.
         '''
         location = super().put(key)
         self.values[location[0]].append(value)
 
     def get(self, key):
         '''
+        This function obtains the key.
+        It returns -1 if not found.
         '''
         location = super().get(key)
         if location != -1:
